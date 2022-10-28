@@ -1,3 +1,10 @@
+# getattr(obj, name, [, default]) - возвращает значение атрибута объекта
+# hasattr(obj, name) - проверяет наличие атрибута name у obj
+# setattr(obj, name, value) - задает значение атрибута (если атрибут не существует, то он создается)
+# delattr(obj, name) - удаляет атрибут name у obj
+# метод __doc__ - возвращает строку с документацией
+# метод __dict__ - возвращает набор атрибутов экземпляра класса
+
 class MagicMethods:
     ...
 
@@ -23,7 +30,7 @@ class Cat:
         print(self.name, ": ", self.age, "y.o. (", self.breed, ")", sep="")
 
 
-class Dog(Cat):
+class Dog(Cat):  # наследование
     def __init__(self, name, age, breed=None, guide=False):
         super(self.__class__, self).__init__(name, age, breed)
         self.guide = guide
@@ -42,5 +49,6 @@ dogs = []
 dogs += [Dog('Sharik', 10, 'Husky', True)]
 
 animals = cats + dogs
+
 if __name__ == '__main__':
     [animal.print() for animal in animals]  # а вот и полиморфизм в действии
