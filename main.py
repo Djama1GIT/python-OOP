@@ -6,7 +6,49 @@
 # метод __dict__ - возвращает набор атрибутов экземпляра класса
 
 class MagicMethods:
-    ...
+    def __call__(self, *args, **kwargs):
+        """
+        Магический метод __call__
+        """
+
+    def __new__(cls, *args, **kwargs):
+        """
+        Магический метод __new__ - вызывается перед созданием объекта класса
+        """
+        print("Магический метод __new__ сработал")
+        return super().__new__(cls)  # Вызываем метод __new__ из суперкласса(object). Иначе __init__ не сработает
+
+    def __init__(self):
+        """
+        Магический метод __init__ - Инициализатор - вызывается сразу после создания объекта класса
+        """
+        print("Магический метод __init__ сработал")
+
+    def __del__(self):
+        """
+        Магический метод __del__ - Финализатор - вызывается перед удалением объекта класса
+        """
+        print("Магический метод __del__ сработал")
+
+
+class Singleton:  # Паттерн Singleton
+    """
+    Одиночка (англ. Singleton) — порождающий шаблон проектирования, гарантирующий,
+    что в однопоточном приложении будет единственный экземпляр некоторого класса,
+    и предоставляющий глобальную точку доступа к этому экземпляру.
+    """
+    __instance = None  # Ссылка на экземпляр класса
+
+    def __call__(self, *args, **kwargs):  # без этого метода каждый раз при объявлении класса данные будут меняться
+        pass  # будет описан позже
+
+    def __new__(cls, *args, **kwargs):
+        if cls.__instance is None:
+            cls.__instance = super().__new__(cls)
+        return cls.__instance  # Возврат ссылки на экземпляр класса. Если его нет, то он создастся.
+
+    def __del__(self):
+        Singleton.__instance = None
 
 
 # просто класс
@@ -21,7 +63,7 @@ class MagicMethods:
 class Cat:
     default_breed = None
 
-    def __init__(self, name, age, breed=None):
+    def __init__(self, name, age, breed=None):  # self - имя для аргумента, представляющего текущий объект класса.
         self.name = name
         self.age = age
         self.breed = breed if breed else self.default_breed  # а тут норм
@@ -90,6 +132,7 @@ def oop_test():
     inheritance()
     polymorphism()
     encapsulation()
+    MagicMethods()
 
 
 if __name__ == '__main__':
