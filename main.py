@@ -2,6 +2,8 @@
 # hasattr(obj, name) - проверяет наличие атрибута name у obj
 # setattr(obj, name, value) - задает значение атрибута (если атрибут не существует, то он создается)
 # delattr(obj, name) - удаляет атрибут name у obj
+#
+# некоторые магические методы:
 # метод __doc__ - возвращает строку с документацией
 # метод __dict__ - возвращает набор атрибутов экземпляра класса
 
@@ -159,6 +161,32 @@ def oop_test():
         какие атрибуты являются общедоступными, а какие — внутренними.
         """
 
+        def __init__(self, x=0, y=0):
+            self.__x = x
+            self.__y = y
+
+        def get_coord(self):
+            """
+            Это геттер.
+            Геттеры (получатели) в Python – это методы, которые используются
+            в объектно-ориентированном программировании (ООП) для доступа к частным атрибутам класса.
+            """
+            return self.__x, self.__y
+
+        def set_coord(self, x=0, y=0):
+            """
+            А это сеттер.
+            Сеттер (установщик) в Python – это метод, который используется для установки значения свойства.
+            В объектно-ориентированном программировании очень полезно устанавливать значение частных атрибутов в классе.
+            Как правило, геттеры и сеттеры в основном используются для обеспечения инкапсуляции данных в ООП.
+            """
+            if x != y:
+                self.__x = x
+                self.__y = y
+                print('Success!')
+            else:
+                raise Exception("Incorrect data!")
+
         @staticmethod
         def public():
             print('Это публичный метод!')
@@ -195,14 +223,21 @@ def oop_test():
     abstraction()
     inheritance()
     polymorphism()
-    Encapsulation.public()
-    Encapsulation._protected()  # тут PyCharm ругается, что неудивительно
+    xy = Encapsulation()
+    xy.public()
+    xy._protected()  # тут PyCharm ругается, что неудивительно
     try:
-        Encapsulation.__private()  # тут тоже, думаю понятно почему
+        xy.__private()  # тут тоже, думаю понятно почему
     except Exception as s:
         print('Увы', s)
         print('Но......')
-        Encapsulation._Encapsulation__private("Почти...")  # и тут
+        xy._Encapsulation__private("Почти...")  # и тут
+    try:
+        xy.set_coord(1, 1)
+    except Exception as exc:
+        print(exc)
+    xy.set_coord(1, 2)
+    print(xy.get_coord())
 
 
 if __name__ == '__main__':
