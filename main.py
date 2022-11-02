@@ -248,6 +248,32 @@ def oop_test():
             else:
                 raise Exception("Incorrect data!")
 
+        #  но работу сеттеров и геттеров можно реализовать и по-другому, с помощью @property
+        @property
+        def coord(self):  # геттер, срабатывает, при обращении к coord
+            print('Геттер property сработал')
+            return self.__x, self.__y
+
+        @coord.setter
+        def coord(self, coord):  # сеттер, срабатывает при попытке изменения атрибута класса coord
+            x, y = coord
+            if x != y:
+                self.__x = x
+                self.__y = y
+                print('Сеттер property сработал!')
+            else:
+                raise Exception("Incorrect data!")
+
+        # Также property можно реализовать и по-другому,
+        # будет работать точно так же, но лучше использовать как ^
+        # :: coord = property(getter, setter, deleter, docstring)
+
+        @coord.deleter
+        def coord(self):  # делитер, срабатывает при попытке удаления атрибута coord
+            print('Делитер property сработал')
+            del self.__x
+            del self.__y
+
         @staticmethod
         def public():
             print('Это публичный метод!')
@@ -312,6 +338,13 @@ def oop_test():
         print(exc)
     xy.set_coord(1, 2)
     print(xy.get_coord())
+    xy.coord = (1, 5)
+    print(xy.coord)
+    try:
+        xy.coord = (1, 1)
+    except Exception as s:
+        print(s)
+    del xy.coord
 
 
 if __name__ == '__main__':
