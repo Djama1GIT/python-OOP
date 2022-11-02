@@ -8,6 +8,9 @@
 # метод __dict__ - возвращает набор атрибутов экземпляра класса
 
 class MagicMethods:
+    param = False
+    forbidden = True
+
     def __call__(self, *args, **kwargs):
         """
         Магический метод __call__
@@ -31,6 +34,46 @@ class MagicMethods:
         Магический метод __del__ - Финализатор - вызывается перед удалением объекта класса
         """
         print("Магический метод __del__ сработал")
+
+    def __getattribute__(self, item):
+        """
+        Магический метод __getattribute__ - Непременно вызывается при попытке доступа к атрибуту экземпляра класса.
+        Метод должен вернуть вычисленное значение для указанного атрибута, либо поднять исключение AttributeError.
+
+        self - Ссылка на экземпляр.
+        item - Имя атрибута, к которому был затребован доступ.
+        """
+        # Пример использования:
+        if item == 'forbidden':  # Атрибут, доступ к которому мы хотим запретить
+            raise AttributeError(f"Доступ атрибуту '{item}' запрещен!")  # вызвать ошибку
+        else:
+            print("Магический метод __getattribute__ сработал")
+            return object.__getattribute__(self, item)  # Метод возвращает вычисленное значение для указанного атрибута
+
+    def __setattr__(self, key, value):
+        """
+        Магический метод __setattr_ - Вызывается при попытке присвоения объекту значения атрибута.
+        """
+        # Пример использования:
+        if key == 'param':  # Атрибут, доступ к которому мы хотим запретить
+            raise AttributeError(f"Доступ атрибуту '{key}' запрещен!")  # вызвать ошибку
+        else:
+            print("Магический метод __setattr__ сработал")
+            return object.__setattr__(self, key, value)  # Изменить значение атрибута
+
+    def __getattr__(self, item):
+        """
+        Магический метод __getattr__  - Вызывается при обращении к несуществующему атрибуту
+        """
+        print("Магический метод __getattr__ сработал")
+        return None  # Если атрибут не существует, то вернуть None
+
+    def __delattr__(self, item):
+        """
+        Магический метод __delattr - Вызывается при удалении объекта класса
+        """
+        print("Магический метод __delattr__ сработал")
+        object.__delattr__(self, item)  # Удалить атрибут
 
 
 class Singleton:  # Паттерн Singleton
@@ -219,7 +262,20 @@ def oop_test():
         # class Dog(Cat): класс Dog наследуется от класса Cat - более подробный пример в начале файла
         #    pass
 
-    MagicMethods()
+    magic = MagicMethods()
+    magic_param = magic.param
+    try:
+        magic_forbidden = magic.forbidden
+    except Exception as s:
+        print(f"{s.args[0]} ({s.__class__})")
+    magic.forbidden = False
+    try:
+        magic.param = True
+    except Exception as s:
+        print(f"{s.args[0]} ({s.__class__})")
+    print(magic.empty)
+    del magic.forbidden
+    del magic
     abstraction()
     inheritance()
     polymorphism()
