@@ -136,7 +136,7 @@ class Methods:
     def class_method(cls, x, y):
         """
         Методы класса принимают класс в качестве параметра, который принято обозначать как cls.
-        Он указывает на класс ToyClass, а не на объект этого класса.
+        Он указывает на класс, а не на объект этого класса.
         При декларации методов этого вида используется декоратор classmethod.
 
         Методы класса привязаны к самому классу, а не его экземпляру. Они могут менять состояние класса,
@@ -163,6 +163,46 @@ class Decorators:
 
 class Iterators:
     pass
+
+
+def descriptor():
+    class Descriptor:
+        """
+        Дескриптор это атрибут объекта со “связанным поведением”, то есть такой атрибут,
+        при доступе к которому его поведение переопределяется методом протокола дескриптора.
+        Эти методы  __get__, __set__ и __delete__.
+        Если хотя бы один из этих методов определен в объекте, то можно сказать что этот метод дескриптор.
+        """
+        @staticmethod
+        def verify(param):
+            if type(param) is not int:
+                raise TypeError('Это не число!')
+
+        def __set_name__(self, owner, name):
+            self.name = "_" + name
+
+        def __get__(self, instance, owner):
+            return getattr(instance, self.name)
+
+        def __set__(self, instance, value):
+            self.verify(value)
+            setattr(instance, self.name, value)
+
+    class Params:
+        param1 = Descriptor()
+        param2 = Descriptor()
+        param3 = Descriptor()
+
+        def __init__(self, param1, param2, param3):
+            self.param1 = param1
+            self.param2 = param2
+            self.param3 = param3
+
+        def __str__(self):
+            return str(self.__dict__)
+
+    params = Params(1, 2, 3)
+    print(params)
 
 
 # просто класс
@@ -347,5 +387,10 @@ def oop_test():
     del xy.coord
 
 
-if __name__ == '__main__':
+def test():
     oop_test()
+    descriptor()
+
+
+if __name__ == '__main__':
+    test()
