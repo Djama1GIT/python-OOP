@@ -1,3 +1,7 @@
+import math
+from functools import wraps
+
+
 # getattr(obj, name, [, default]) - возвращает значение атрибута объекта
 # hasattr(obj, name) - проверяет наличие атрибута name у obj
 # setattr(obj, name, value) - задает значение атрибута (если атрибут не существует, то он создается)
@@ -13,7 +17,10 @@ class MagicMethods:
 
     def __call__(self, *args, **kwargs):
         """
-        Магический метод __call__
+        Магический метод __call__ - вызывается при вызове экземпляра класса.
+        Позволяет экземплярам пользовательских типов представляться объектами, поддерживающими вызов.
+
+        Class.__call__() = Class()
         """
 
     def __new__(cls, *args, **kwargs):
@@ -128,6 +135,22 @@ class Singleton:  # Паттерн Singleton
         Singleton.__instance = None
 
 
+class Counter:  # Functor
+    """
+    Функтор — это реализация некоего контекста, в котором находятся данные, причем эти данные можно достать,
+    применить к ним функцию, и поместить обратно в контекст.
+    Причем от функции требуется только умение работать с самими данными, но не с контекстом.
+    """
+
+    def __init__(self):
+        self.__count = 0
+
+    def __call__(self, *args, **kwargs):
+        self.__count += 1
+
+        return self.__count
+
+
 class Monostate:
     """
     Паттерн моносостояние (класс Борга)
@@ -189,8 +212,56 @@ class Methods:
         return x + y
 
 
-class Decorators:
-    pass
+def decorators():
+    def decorator(symbols=''):
+        def _decorator(func):
+            @wraps(func)  # так декорируемая функция не потеряет свои аргументы(имя, документацию..)
+            def wrapper(*args, **kwargs):
+                print(symbols)
+                print('Функция-обёртка!')
+                print('Выполняем обёрнутую функцию...')
+                _return = func(*args, **kwargs)
+                for symbol in symbols:
+                    _return = _return.replace(symbol, '')
+                print('Выходим из обёртки')
+                return _return
+
+            wrapper.__func__ = func
+            return wrapper
+
+        return _decorator
+
+    @decorator('n ')
+    def function(text):
+        return text
+
+    print(function('among us'))  # -> amogus
+
+    # print(function.__func__('among us')) -> among us
+
+    # без @decorator('n '), но исполняется так же
+    #
+    # def function(text):
+    #     return text
+    # print(decorator('n ')(function)('among us')) -> amogus
+
+    class Derivative:
+        # Это простейший пример декоратора-класса, в реальных проектах всё может быть куда сложнее.
+        # Короче, просто знай, что так тоже можно.
+        def __init__(self, dx=0.001):
+            self.dx = dx
+
+        def __call__(self, func):
+            @wraps(func)
+            def wrapper(x, *args, **kwargs):
+                return (func(x + self.dx, *args, **kwargs) - func(x, *args, **kwargs)) / self.dx  # производная
+            return wrapper
+
+    @Derivative(dx=0.000001)  # -> dx - точность вычисления производной. Чем меньше dx, тем точнее
+    def sin(x):
+        return math.sin(x)
+
+    print(sin(math.pi / 3))  # ->> 0.4999995669718871
 
 
 class Iterators:
@@ -423,6 +494,10 @@ def oop_test():
 def test():
     oop_test()
     descriptor()
+    decorators()
+    c = Counter()  # c -> 0
+    [c() for i in range(10)]  # c -> 10
+    print(c())  # c -> 11
 
 
 if __name__ == '__main__':
