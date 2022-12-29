@@ -213,6 +213,54 @@ class MagicMethods:
         По аналогии с __add__, только "%", также есть методы __rmod__ и __imod__
         """
 
+    def __eq__(self, other):
+        """
+        Магический метод __eq__
+        Позволяет реализовать проверку на равенство для экземпляров пользовательских типов.
+        Метод может возбудить исключение NotImplemented, если сравнение для указанной пары аргументов не реализовано.
+        """
+        return self.param == other.param
+
+    def __ne__(self, other):
+        """
+        Магический метод __ne__
+        по умолчанию работает как not __eq__
+        """
+        return self.param != other.param
+
+    def __lt__(self, other):
+        """
+        Магический метод __lt__
+        <
+        """
+        return self.param < other.param
+
+    def __gt__(self, other):
+        """
+        Магический метод __gt__
+        >
+        """
+        return self.param > other.param
+
+    def __le__(self, other):
+        """
+        Магический метод __le__
+        <=
+        """
+        return self.param <= other.param
+
+    def __ge__(self, other):
+        """
+        Магический метод __ge__
+        >=
+
+        Вместо определения всех перечисленных методов иногда проще и
+        правильнее воспользоваться декоратором functools.total_ordering.
+        P.S. Нужно определить __eq__ и один из остальных операторов сравнения, кроме __ne__.
+        Оставшиеся будут сгенерированы автоматически.
+        """
+        return self.param >= other.param
+
 
 class Singleton:  # Паттерн Singleton
     """
