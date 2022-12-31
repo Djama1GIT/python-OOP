@@ -377,7 +377,7 @@ class FRange:  # пример итератора
 def generator():
     for i in range(1, 10):
         a = range(i, 11)
-        yield sum(a) / len(a)
+        yield sum(a) / len(a)  # условно говоря, yield замораживает функцию и возвращает элемент(при помощи next())
 # list(generator) -> [5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5]
 
 
