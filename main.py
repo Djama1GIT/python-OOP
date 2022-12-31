@@ -374,6 +374,13 @@ class FRange:  # пример итератора
         return self
 
 
+def generator():
+    for i in range(1, 10):
+        a = range(i, 11)
+        yield sum(a) / len(a)
+# list(generator) -> [5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5]
+
+
 class Singleton:  # Паттерн Singleton
     """
     Одиночка (англ. Singleton) — порождающий шаблон проектирования, гарантирующий,
